@@ -28,12 +28,25 @@ public class compra extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    String pasoSiguiente = null;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
+            String pasoSiguiente = request.getParameter("pasoSiguiente");
+            Cookie cookies[] = request.getCookies();
+            if(pasoSiguiente == null){
+                if(cookies != null){
+                    for(int i = 0; i < cookies.length; i++){
+                        if(cookies[i].getName().equals("pasoSiguiente")){
+                            response.sendRedirect(cookies[i].getValue());
+                        }
+                    }
+                } else {
+                    Cookie paso = new Cookie("pasoSiguiente", "1");
+                    paso.setMaxAge(86400);
+                }
+            }
             if(pasoSiguiente == "0"){
                 response.sendRedirect("index");
             }else if(pasoSiguiente == "1"){
@@ -63,20 +76,6 @@ public class compra extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        pasoSiguiente = request.getParameter("pasoSiguiente");
-        Cookie cookies[] = request.getCookies();
-            if(pasoSiguiente == null){
-                if(cookies != null){
-                    for(int i = 0; i < cookies.length; i++){
-                        if(cookies[i].getName().equals("pasoSiguiente")){
-                            response.sendRedirect(cookies[i].getValue());
-                        }
-                    }
-                } else {
-                    Cookie paso = new Cookie("pasoSiguiente", "1");
-                    paso.setMaxAge(86400);
-                }
-            }
     }
 
     /**
